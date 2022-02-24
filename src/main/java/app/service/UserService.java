@@ -53,6 +53,7 @@ public class UserService
                 user.setBio(result.getString("bio"));
                 user.setWonGames(result.getInt("wonGames"));
                 user.setLostGames(result.getInt("lostGames"));
+                user.setName(result.getString("name"));
 
                 return user;
 
@@ -343,13 +344,17 @@ public class UserService
 
     public void updateProfile(String username, Map<String, String> input)
     {
+        User user = getUser(username);
         if(input.containsKey("Name"))
         {
             try{
+                //System.out.println("Name in der Map: " + input.get("Name"));
                 PreparedStatement stat1 = conn.prepareStatement("UPDATE users SET name = ? WHERE username = ?");
                 stat1.setString(1, input.get("Name"));
                 stat1.setString(2, username);
                 stat1.executeUpdate();
+                //user.setName(input.get("Name"));
+                System.out.println("neuer username: " + user.getName());
             }
             catch (Exception e)
             {
@@ -365,6 +370,7 @@ public class UserService
                 stat1.setString(1, input.get("Bio"));
                 stat1.setString(2, username);
                 stat1.executeUpdate();
+                user.setBio(input.get("Bio"));
             }
             catch (Exception e)
             {
@@ -379,6 +385,7 @@ public class UserService
                 stat1.setString(1, input.get("Image"));
                 stat1.setString(2, username);
                 stat1.executeUpdate();
+                user.setImage(input.get("Image"));
             }
             catch (Exception e)
             {

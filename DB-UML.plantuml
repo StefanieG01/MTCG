@@ -1,24 +1,28 @@
 @startuml
 
-class Card
+class Cards
 {
     id
     name
     cardType
     elementType
     damage
-    ownerID
+    username
+    deck
 }
 
 class User
 {
-    id
     username
+    name
     password
     coins
     eloValue
+    bio
+    image
+    lostGames
+    wonGames
+    token
 }
-
-Card -> User
 
 @enduml

@@ -129,6 +129,14 @@ public class Game
         {
             return "\nYour Ork is controlled by the Wizzard, you can't attack him.";
         }
+        else if(card1.getCardType() == cardType.SPELL && card1.getElementType() == elementType.WATER && card2.getCardType() == cardType.KNIGHT)
+        {
+            return "\nYour WaterSpell drown because of the heavy armor of the Knight.";
+        }
+        else if(card1.getCardType() == cardType.SPELL && card2.getCardType() == cardType.KRAKEN)
+        {
+            return "\nThe Kraken is immune to your Spell-Card.";
+        }
         else if(card1.getCardType() == cardType.DRAGON && card2.getCardType() == cardType.ELF)
         {
             return "\nThe FireElve evaded your attack.";

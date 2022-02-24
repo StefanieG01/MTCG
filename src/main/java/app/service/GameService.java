@@ -53,6 +53,12 @@ public class GameService
             log += game.fight(user1, card1, user2, card2) + "\n\n";
             cardService.updateUsername(card1);
             cardService.updateUsername(card2);
+
+            if(game.getRoundNumber() == 50)
+            {
+                log += "IT'S ROUND 50 => YOU'RE NOW GETTING THE SPECIAL CARD!";
+                cardService.addSpecialCard(user1, user2);
+            }
         }
         userService.updateStats(user1);
         userService.updateStats(user2);

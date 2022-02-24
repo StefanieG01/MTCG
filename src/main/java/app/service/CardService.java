@@ -124,8 +124,6 @@ public class CardService
             PreparedStatement stat2 = conn.prepareStatement("UPDATE users SET coins = coins - 5 WHERE username = ?");
             stat2.setString(1, user.getUsername());
             stat2.executeUpdate();
-
-
         }
         catch(Exception e)
         {
@@ -161,5 +159,64 @@ public class CardService
         }
     }
 
+    public void addSpecialCard(User user1, User user2)
+    {
+        Card card1 = new Card(getRandomString(), "SpecialWinnerCard", 150);
+        try{
+            PreparedStatement stat1 = conn.prepareStatement("INSERT INTO cards(id, name, cardType, elementType, damage, username, deck) VALUES (?,?,?,?,?,?,?)");
+            stat1.setString(1, card1.getId());
+            stat1.setString(2, card1.getName());
+            stat1.setString(3, cardType.SPELL.name());
+            stat1.setString(4, elementType.REGULAR.name());
+            stat1.setInt(5, card1.getDamage());
+            stat1.setString(6, user1.getUsername());
+            stat1.setBoolean(7, true);
+            stat1.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+
+        Card card2 = new Card(getRandomString(), "SpecialWinnerCard", 150);
+        try{
+            PreparedStatement stat2 = conn.prepareStatement("INSERT INTO cards(id, name, cardType, elementType, damage, username, deck) VALUES (?,?,?,?,?,?,?)");
+            stat2.setString(1, card2.getId());
+            stat2.setString(2, card2.getName());
+            stat2.setString(3, cardType.SPELL.name());
+            stat2.setString(4, elementType.REGULAR.name());
+            stat2.setInt(5, card2.getDamage());
+            stat2.setString(6, user2.getUsername());
+            stat2.setBoolean(7, true);
+            stat2.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
+    public String getRandomString()
+    {
+        String randomString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            + "0123456789"
+                            + "abcdefghijklmnopqrstuvwxyz";
+
+        StringBuilder sb = new StringBuilder(10);
+
+        for (int i = 0; i < 10; i++) {
+
+            // generate a random number between 0 and 10
+            int index
+                    = (int)(randomString.length()
+                    * Math.random());
+
+            // add Character one by one in end of sb
+            sb.append(randomString
+                    .charAt(index));
+        }
+
+        return sb.toString();
+    }
 
 }

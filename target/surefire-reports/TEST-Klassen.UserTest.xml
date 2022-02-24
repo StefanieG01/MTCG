@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="AT"/>
     <property name="sun.boot.library.path" value="C:\Users\stefa\.jdks\corretto-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\stefa\AppData\Local\Temp\surefire1085308669877232795\surefirebooter14533476491281147440.jar C:\Users\stefa\AppData\Local\Temp\surefire1085308669877232795 2022-02-24T04-07-04_563-jvmRun1 surefire11204851801532156018tmp surefire_010264464733926039517tmp"/>
+    <property name="sun.java.command" value="C:\Users\stefa\AppData\Local\Temp\surefire11198752956204639726\surefirebooter5184761243848123166.jar C:\Users\stefa\AppData\Local\Temp\surefire11198752956204639726 2022-02-24T05-58-11_928-jvmRun1 surefire1258847720346105555tmp surefire_03634837141144763681tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\stefa\IdeaProjects\Projekt\target\test-classes;C:\Users\stefa\IdeaProjects\Projekt\target\classes;C:\Users\stefa\.m2\repository\org\projectlombok\lombok\1.18.22\lombok-1.18.22.jar;C:\Users\stefa\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.8.1\junit-jupiter-api-5.8.1.jar;C:\Users\stefa\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\stefa\.m2\repository\org\junit\platform\junit-platform-commons\1.8.1\junit-platform-commons-1.8.1.jar;C:\Users\stefa\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\stefa\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.8.1\junit-jupiter-engine-5.8.1.jar;C:\Users\stefa\.m2\repository\org\junit\platform\junit-platform-engine\1.8.1\junit-platform-engine-1.8.1.jar;C:\Users\stefa\.m2\repository\org\junit\jupiter\junit-jupiter\5.8.1\junit-jupiter-5.8.1.jar;C:\Users\stefa\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.8.1\junit-jupiter-params-5.8.1.jar;C:\Users\stefa\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.12.4\jackson-annotations-2.12.4.jar;C:\Users\stefa\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.12.4\jackson-databind-2.12.4.jar;C:\Users\stefa\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.12.4\jackson-core-2.12.4.jar;C:\Users\stefa\.m2\repository\org\postgresql\postgresql\42.2.18.jre7\postgresql-42.2.18.jre7.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\stefa\AppData\Local\Temp\surefire1085308669877232795\surefirebooter14533476491281147440.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\stefa\AppData\Local\Temp\surefire11198752956204639726\surefirebooter5184761243848123166.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7"/>
@@ -63,5 +63,5 @@
   <testcase name="testName" classname="Klassen.UserTest" time="0"/>
   <testcase name="eloValue" classname="Klassen.UserTest" time="0"/>
   <testcase name="testWonGames" classname="Klassen.UserTest" time="0"/>
-  <testcase name="testLostGames" classname="Klassen.UserTest" time="0"/>
+  <testcase name="testLostGames" classname="Klassen.UserTest" time="0.001"/>
 </testsuite>
