@@ -1,0 +1,24 @@
+@startuml
+
+class Card
+{
+    id
+    name
+    cardType
+    elementType
+    damage
+    ownerID
+}
+
+class User
+{
+    id
+    username
+    password
+    coins
+    eloValue
+}
+
+Card -> User
+
+@enduml
