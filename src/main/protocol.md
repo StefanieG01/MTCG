@@ -89,5 +89,5 @@ Die genaue Zeit habe ich nicht notiert. Nachträglich kann ich die Zeit nur absc
 - in den Semesterferien für den Zweitantritt ca 30 Stunden
 
 ### - Link zu git
-[Link zum Git-Repo] (https://github.com/StefanieG01/MTCG-Projekt.git)
+[Link zum Git-Repo] (https://github.com/StefanieG01/MTCG.git)
 
