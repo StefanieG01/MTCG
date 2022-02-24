@@ -63,7 +63,10 @@ public class GameService
         userService.updateStats(user1);
         userService.updateStats(user2);
 
-
+        if(game.getRoundNumber() >= 50)
+        {
+            cardService.deleteSpecialCard(user1.getUsername(), user2.getUsername());
+        }
 
         return log;
     }

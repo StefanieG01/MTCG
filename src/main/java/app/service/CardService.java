@@ -196,6 +196,28 @@ public class CardService
         }
     }
 
+    public void deleteSpecialCard(String username1, String username2)
+    {
+        try{
+            PreparedStatement stat1 = conn.prepareStatement("DELETE from cards WHERE name = 'SpecialWinnerCard' AND username = ?");
+            stat1.setString(1, username1);
+            stat1.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+        try{
+            PreparedStatement stat2 = conn.prepareStatement("DELETE from cards WHERE name = 'SpecialWinnerCard' AND username = ?");
+            stat2.setString(1, username2);
+            stat2.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
     public String getRandomString()
     {
         String randomString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
