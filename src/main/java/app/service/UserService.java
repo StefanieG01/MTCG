@@ -2,47 +2,38 @@ package app.service;
 
 import app.model.Card;
 import app.model.User;
-
 import java.sql.*;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-
-import app.model.cardType;
-import server.Request;
 
 public class UserService
 {
-
     Connection conn = null;
 
     private List<User> userData;
 
-    public UserService(Connection conn) {
+    public UserService(Connection conn)
+    {
         try{
             this.conn = conn;
             Statement stat = conn.createStatement();
             String createStatement = "CREATE TABLE IF NOT EXISTS users(username VARCHAR(255) NOT NULL UNIQUE,name VARCHAR(255), password varchar(255) NOT NULL, coins INTEGER, eloValue INTEGER, bio VARCHAR(255), image VARCHAR(255), lostGames INTEGER, wonGames InTEGER, token VARCHAR(255) NOT NULL, PRIMARY KEY(username))";
             stat.executeUpdate(createStatement);
-
-
         }
         catch (Exception e)
         {
             System.out.println(e);
         }
         userData = new ArrayList<>();
-        userData.add(new User("Stefanie", "SuperSicher1"));
     }
 
-    // GET /users/:username     --> zeigt einzelne User an
+    // zeigt einzelne User an
     public User getUser(String username)
     {
-
         try{
-            PreparedStatement prepStat = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
-            prepStat.setString(1, username);
+            PreparedStatement stat = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+            stat.setString(1, username);
+            ResultSet result = stat.executeQuery();
 
-            ResultSet result = prepStat.executeQuery();
             while(result.next())
             {
                 User user = new User(result.getString("username"), result.getString("password"));
@@ -56,30 +47,25 @@ public class UserService
                 user.setName(result.getString("name"));
 
                 return user;
-
             }
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
-
-        /*User foundUser = userData.stream()
-                .filter(user -> username.equals(user.getUsername()))
-                .findAny()
-                .orElse(null);*/
         return null;
     }
 
-    // GET /users       --> zeigt alle User an
-    public List<User> getUser() {
-
+    // zeigt alle User an
+    public List<User> getUser()
+    {
         List<User> userList = new ArrayList<>();
 
         try{
             Statement stat = conn.createStatement();
             String statement = "SELECT * FROM users";
             ResultSet result = stat.executeQuery(statement);
+
             while(result.next())
             {
                 User user = new User(result.getString("username"), result.getString("password"));
@@ -92,19 +78,18 @@ public class UserService
                 user.setLostGames(result.getInt("lostGames"));
 
                 userList.add(user);
-
             }
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
-
         return userList;
     }
 
-    // POST /users          --> fügt User hinzu
-    public String addUser(User user) {
+    // fügt User hinzu
+    public String addUser(User user)
+    {
         user.setCoins(20);
         user.setEloValue(100);
         user.setToken(user.getUsername() + "-mtcgToken");
@@ -114,8 +99,7 @@ public class UserService
         user.setImage("");
         user.setName("");
 
-
-        try{
+        try{        // checken, ob der username bereits existiert
             PreparedStatement stat = conn.prepareStatement("SELECT COUNT(*) AS foundUsers FROM users WHERE username = ?");
             stat.setString(1, user.getUsername());
             ResultSet result = stat.executeQuery();
@@ -128,14 +112,13 @@ public class UserService
                     return "Failure! This username already exists in database. Please choose another username!";
                 }
             }
-
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
 
-        try{
+        try{        // user in DB hinzufügen
             PreparedStatement stat = conn.prepareStatement("INSERT INTO users (username, name, password, coins, eloValue, bio, image, lostGames, wonGames, token) VALUES (?,'',?,?,?,'', '', 0,0, ?)");
             stat.setString(1, user.getUsername());
             stat.setString(2, user.getPassword());
@@ -148,12 +131,10 @@ public class UserService
         {
             System.out.println(e);
         }
-
-        //userData.add(user);
         return "Successfully added user.";
     }
 
-    // POST /sessions       --> login
+    // login
     public boolean login(User user)
     {
         try{
@@ -166,19 +147,10 @@ public class UserService
         {
             System.out.println(e);
         }
-
-
-        /*for(User u : userData)
-        {
-
-            if(u.getUsername().equals(user.getUsername()) && u.getPassword().equals(user.getPassword()))
-            {
-                return true;
-            }
-        }*/
         return false;
     }
 
+    // stack von user anzeigen
     public List<Card> getStack(User user)
     {
         List<Card> cardsInStack = new ArrayList<>();
@@ -206,6 +178,7 @@ public class UserService
         return cardsInStack;
     }
 
+    // deck von user anzeigen
     public List<Card> getDeck(User user)
     {
         List<Card> cardsInDeck = new ArrayList<>();
@@ -229,17 +202,15 @@ public class UserService
                     cardsInDeck.add(card);
                 }
                 return cardsInDeck;
-
-
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
         return null;
-        //return user.deck;
     }
 
+    // deck für user erstellen
     public boolean setDeck(User user, String[] ids)
     {
         int cntFoundCards = 0;
@@ -260,28 +231,27 @@ public class UserService
             cntAvailableCards += checkIDSinStack(user, ids[2]);
             cntAvailableCards += checkIDSinStack(user, ids[3]);
 
-            if(cntAvailableCards != 4)  // user hat nicht alle 4 karten in seinem stack
+// user hat nicht alle 4 karten in seinem stack
+            if(cntAvailableCards != 4)
             {
                 return false;
             }
 
-            // user hat alle 4 karten in seinem stack --> sein altes deck wird erst gelöscht
+// user hat alle 4 karten in seinem stack --> sein altes deck wird erst gelöscht
             if(cntFoundCards > 0)
             {
-                //System.out.println("decks false setzen");
                 PreparedStatement stat6 = conn.prepareStatement("UPDATE cards SET deck = false WHERE username = ?");
                 stat6.setString(1, user.getUsername());
                 stat6.executeQuery();
             }
 
-            // dann das neue gesetzt
+// dann das neue deck gesetzt
             setNewDeck(ids[0]);
             setNewDeck(ids[1]);
             setNewDeck(ids[2]);
             setNewDeck(ids[3]);
 
             return true;
-
         }
         catch(Exception e)
         {
@@ -290,6 +260,7 @@ public class UserService
         return false;
     }
 
+// schauen, ob der user die angegebene Karte besitzt
     int checkIDSinStack(User user, String id)
     {
         try{
@@ -307,6 +278,7 @@ public class UserService
         return 0;
     }
 
+// neues Karte als deck definieren
     void setNewDeck(String id)
     {
         try{
@@ -321,47 +293,25 @@ public class UserService
         }
     }
 
-        /*List<Card> stack = getStack(user);
 
-        Card[] foundCards = stack.stream()
-                .filter(card -> Arrays.stream(ids).anyMatch(id -> id.equals(card.getId())))
-                .toArray(Card[]::new);
-
-        if(foundCards.length !=4)
-        {
-            return false;
-        }
-
-        user.deck.clear();
-        Collections.addAll(user.deck, foundCards);
-
-        for(Card card : foundCards)
-        {
-            stack.remove(card);
-        }
-        return true;
-    }*/
-
+    // profil aktualisieren
     public void updateProfile(String username, Map<String, String> input)
     {
         User user = getUser(username);
+
         if(input.containsKey("Name"))
         {
             try{
-                //System.out.println("Name in der Map: " + input.get("Name"));
                 PreparedStatement stat1 = conn.prepareStatement("UPDATE users SET name = ? WHERE username = ?");
                 stat1.setString(1, input.get("Name"));
                 stat1.setString(2, username);
                 stat1.executeUpdate();
-                //user.setName(input.get("Name"));
-                System.out.println("neuer username: " + user.getName());
             }
             catch (Exception e)
             {
                 System.out.println(e);
             }
         }
-
 
         if(input.containsKey("Bio"))
         {
@@ -394,21 +344,22 @@ public class UserService
         }
     }
 
+    // stats von user ändern
     public void updateStats(User user)
     {
-            try
-            {
-                PreparedStatement stat1 = conn.prepareStatement("UPDATE users SET eloValue = ?, wonGames = ?, lostGames = ? WHERE username = ?");
-                stat1.setInt(1, user.getEloValue());
-                stat1.setInt(2, user.getWonGames());
-                stat1.setInt(3, user.getLostGames());
-                stat1.setString(4, user.getUsername());
+        try
+        {
+            PreparedStatement stat = conn.prepareStatement("UPDATE users SET eloValue = ?, wonGames = ?, lostGames = ? WHERE username = ?");
+            stat.setInt(1, user.getEloValue());
+            stat.setInt(2, user.getWonGames());
+            stat.setInt(3, user.getLostGames());
+            stat.setString(4, user.getUsername());
 
-                stat1.executeUpdate();
+            stat.executeUpdate();
 
-            } catch (Exception e)
-            {
-                System.out.println(e);
-            }
+        } catch (Exception e)
+        {
+            System.out.println(e);
+        }
     }
 }

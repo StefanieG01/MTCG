@@ -11,14 +11,11 @@ public class GameService
 {
     Connection conn;
     private User waitingUser;
-    public CardService cardService;
 
     public GameService(Connection conn)
     {
         this.conn = conn;
     }
-
-    //public CardService cardService = new CardService(conn);
 
     public String registerForBattle(User user)
     {
@@ -43,8 +40,6 @@ public class GameService
         Random rand = new Random();
         String log = "\n\t\tBATTLE START";
 
-        //System.out.println(userService.getDeck(user1).size());
-
         while(userService.getDeck(user1).size() != 0 && userService.getDeck(user2).size() != 0 && game.getRoundNumber() < 100)
         {
             Card card1 = userService.getDeck(user1).get(rand.nextInt(userService.getDeck(user1).size()));
@@ -54,6 +49,7 @@ public class GameService
             cardService.updateUsername(card1);
             cardService.updateUsername(card2);
 
+            // Spezielle "WinnerCard" für beide User hinzufügen
             if(game.getRoundNumber() == 50)
             {
                 log += "IT'S ROUND 50 => YOU'RE NOW GETTING THE SPECIAL CARD!";
@@ -63,11 +59,11 @@ public class GameService
         userService.updateStats(user1);
         userService.updateStats(user2);
 
+        // WinnerCards wieder löschen, dass der User sie nicht beim nächsten Battle von Anfang an ins Deck holen kann
         if(game.getRoundNumber() >= 50)
         {
             cardService.deleteSpecialCard(user1.getUsername(), user2.getUsername());
         }
-
         return log;
     }
 }

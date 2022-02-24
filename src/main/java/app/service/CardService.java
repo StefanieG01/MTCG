@@ -4,19 +4,21 @@ import app.model.Card;
 import app.model.User;
 import app.model.cardType;
 import app.model.elementType;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.print.attribute.HashPrintRequestAttributeSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CardService
 {
-    private List<Card[]> cardList;
     Connection conn;
+    @Getter
+    @Setter
+    List<Card> cards = null;
 
     public CardService(Connection conn)
     {
@@ -30,8 +32,6 @@ public class CardService
         {
             System.out.println(e);
         }
-
-        //cardList = new ArrayList<>();
     }
 
     public void addCards(Card[] cards)
@@ -41,28 +41,36 @@ public class CardService
             if (card.getName().contains("Spell"))
             {
                 card.setCardType(cardType.SPELL);
-            } else if (card.getName().contains("Troll"))
+            }
+            else if (card.getName().contains("Troll"))
             {
                 card.setCardType(cardType.TROLL);
-            } else if (card.getName().contains("Goblin"))
+            }
+            else if (card.getName().contains("Goblin"))
             {
                 card.setCardType(cardType.GOBLIN);
-            } else if (card.getName().contains("Dragon"))
+            }
+            else if (card.getName().contains("Dragon"))
             {
                 card.setCardType(cardType.DRAGON);
-            } else if (card.getName().contains("Wizzard"))
+            }
+            else if (card.getName().contains("Wizzard"))
             {
                 card.setCardType(cardType.WIZZARD);
-            } else if (card.getName().contains("Ork"))
+            }
+            else if (card.getName().contains("Ork"))
             {
                 card.setCardType(cardType.ORK);
-            } else if (card.getName().contains("Knight"))
+            }
+            else if (card.getName().contains("Knight"))
             {
                 card.setCardType(cardType.KNIGHT);
-            } else if (card.getName().contains("Kraken"))
+            }
+            else if (card.getName().contains("Kraken"))
             {
                 card.setCardType(cardType.KRAKEN);
-            } else if (card.getName().contains("Elf"))
+            }
+            else if (card.getName().contains("Elf"))
             {
                 card.setCardType(cardType.ELF);
             }
@@ -71,10 +79,12 @@ public class CardService
             if (card.getName().contains("Water"))
             {
                 card.setElementType(elementType.WATER);
-            } else if (card.getName().contains("Fire"))
+            }
+            else if (card.getName().contains("Fire"))
             {
                 card.setElementType(elementType.FIRE);
-            } else
+            }
+            else
             {
                 card.setElementType(elementType.REGULAR);
             }
@@ -96,10 +106,9 @@ public class CardService
             }
 
         }
-
-        //this.cardList.add(cards);
     }
 
+    // packages kaufen
     public String acquireCards(User user)
     {
         try{
@@ -108,15 +117,14 @@ public class CardService
             ResultSet result1 = stat1.executeQuery(stm);
             result1.next();
 
-                int foundFreeCards = result1.getInt("foundFreeCards");
+            // erst wird geprüft, ob überhaupt genug freie Karten verfügbar wären
+            int foundFreeCards = result1.getInt("foundFreeCards");
+            if(foundFreeCards <= 4)
+            {
+                return "Failure! Not enough packages/cards available to buy!";
+            }
 
-                if(foundFreeCards <= 4)
-                {
-                    return "Failure! Not enough packages/cards available to buy!";
-                }
-
-
-
+            // die ersten 5 Karten ohne username bekommt der user
             PreparedStatement stat = conn.prepareStatement("UPDATE cards SET username = ? WHERE CTID IN (SELECT CTID FROM cards WHERE username IS NULL LIMIT 5);");
             stat.setString(1, user.getUsername());
             stat.executeUpdate();
@@ -131,23 +139,12 @@ public class CardService
         }
 
         return "Successfully added Package to Stack";
-        /* Card[] tmp = this.cardList.get(0);
-        this.cardList.remove(0);
-        return tmp;*/
     }
-
-    public List<Card[]> getCards() {
-        return cardList;
-    }
-
 
     public void updateUsername(Card card)
     {
         try
         {
-            /*System.out.println("\ncard-username: " + card.getUsername());
-            System.out.println("\ncard-deck: " + card.isDeck());
-            System.out.println("\ncard-id: " + card.getId());*/
             PreparedStatement stat1 = conn.prepareStatement("UPDATE cards SET username = ? WHERE id = ?");
             stat1.setString(1, card.getUsername());
             stat1.setString(2, card.getId());
@@ -159,6 +156,7 @@ public class CardService
         }
     }
 
+    // spezielle Karte die für User nach 50 Runden freigeschaltet wird
     public void addSpecialCard(User user1, User user2)
     {
         Card card1 = new Card(getRandomString(), "SpecialWinnerCard", 150);
@@ -196,6 +194,7 @@ public class CardService
         }
     }
 
+    // spezielle Karte wird wieder aus der DB gelöscht, dass der User sie nicht beim nächsten Kampf von Anfang an in sein Deck geben kann
     public void deleteSpecialCard(String username1, String username2)
     {
         try{
@@ -218,6 +217,7 @@ public class CardService
         }
     }
 
+    // random String für spezielle Karte als id
     public String getRandomString()
     {
         String randomString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -228,17 +228,15 @@ public class CardService
 
         for (int i = 0; i < 10; i++) {
 
-            // generate a random number between 0 and 10
+            // generiert random number
             int index
                     = (int)(randomString.length()
                     * Math.random());
 
-            // add Character one by one in end of sb
+            // einzelne chars an sb anhängen
             sb.append(randomString
                     .charAt(index));
         }
-
         return sb.toString();
     }
-
 }

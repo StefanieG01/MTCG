@@ -8,8 +8,6 @@ import http.HttpStatus;
 import server.Request;
 import server.Response;
 import app.model.User;
-
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +21,11 @@ public class UserController extends Controller
         this.userService = userService;
     }
 
-    // GET /users       --> alle User
-    public Response getUsers() {
+    // GET /users       --> alle User anzeigen
+    public Response getUsers()
+    {
         try {
             List userData = this.userService.getUser();
-            // "[ { \"id\": 1, \"city\": \"Vienna\", \"temperature\": 9.0 }, { ... }, { ... } ]"
             String userDataJSON = this.getObjectMapper().writeValueAsString(userData);
 
             return new Response(
@@ -45,11 +43,11 @@ public class UserController extends Controller
         }
     }
 
-    // GET /users       --> einzelne User
-    public Response getUserByName(String username) {
+    // GET /users/       --> einzelnen User anzeigen
+    public Response getUserByName(String username)
+    {
         try {
             User userData = this.userService.getUser(username);
-            // "[ { \"id\": 1, \"city\": \"Vienna\", \"temperature\": 9.0 }, { ... }, { ... } ]"
             String userDataJSON = this.getObjectMapper().writeValueAsString(userData);
 
             return new Response(
@@ -67,12 +65,12 @@ public class UserController extends Controller
         }
     }
 
-    // POST /users
-    public Response addUser(Request request) {
+    // POST /users      --> neuen User anlegen
+    public Response addUser(Request request)
+    {
         User user = null;
         try {
 
-            // request.getBody() => "{ \"id\": 4, \"city\": \"Graz\", ... }
             user = this.getObjectMapper().readValue(request.getBody(), User.class);
             String returnMessage = this.userService.addUser(user);
 
@@ -92,11 +90,11 @@ public class UserController extends Controller
         );
     }
 
-    // POST /sessions
-    public Response login(Request request) {
+    // POST /sessions       --> login user
+    public Response login(Request request)
+    {
         User user = null;
         try {
-            // request.getBody() => "{ \"id\": 4, \"city\": \"Graz\", ... }
             user = this.getObjectMapper().readValue(request.getBody(), User.class);
             if(this.userService.login(user))
             {
@@ -126,11 +124,10 @@ public class UserController extends Controller
         );
     }
 
-    public Response getStack(User user) {
-
+    public Response getStack(User user)
+    {
             try {
                 List<Card> stack = this.userService.getStack(user);
-                // "[ { \"id\": 1, \"city\": \"Vienna\", \"temperature\": 9.0 }, { ... }, { ... } ]"
                 String userDataJSON = this.getObjectMapper().writeValueAsString(stack);
 
                 return new Response(
@@ -148,10 +145,11 @@ public class UserController extends Controller
             }
         }
 
-    public Response getDeck(User user) {
+    // GET /deck        --> Deck von User anzeigen
+    public Response getDeck(User user)
+    {
         try {
             List<Card> deck = this.userService.getDeck(user);
-            //System.out.println(deck);
             if(deck == null)
             {
                 return new Response(
@@ -160,7 +158,6 @@ public class UserController extends Controller
                         "{ \"message\" : \"Deck is empty\" }"
                 );
             }
-            // "[ { \"id\": 1, \"city\": \"Vienna\", \"temperature\": 9.0 }, { ... }, { ... } ]"
             String userDataJSON = this.getObjectMapper().writeValueAsString(deck);
 
             return new Response(
@@ -178,7 +175,9 @@ public class UserController extends Controller
         }
     }
 
-    public Response setDeck(User user, Request request) {
+    // PUT /deck        --> Deck für user erstellen
+    public Response setDeck(User user, Request request)
+    {
         try {
             String[] ids = this.getObjectMapper().readValue(request.getBody(), String[].class);
             String responseText = "added Cards to deck";
@@ -209,17 +208,12 @@ public class UserController extends Controller
         }
     }
 
+    // PUT /users/username      --> Profilangaben ändern
     public Response updateProfile(String username, Request request)
     {
-
         try
         {
             Map<String, String> userInput = this.getObjectMapper().readValue(request.getBody(), Map.class);
-            /*for(String u : userInput.values())
-            {
-                System.out.println(u);
-            }*/
-
 
             this.userService.updateProfile(username, userInput);
 
@@ -238,6 +232,7 @@ public class UserController extends Controller
         }
     }
 
+    // GET /stats       --> Stats von user anzeigen
     public Response getStats(User user)
     {
         int playedGames = user.getWonGames() + user.getLostGames();
@@ -250,10 +245,10 @@ public class UserController extends Controller
         );
     }
 
+    // GET /score       --> Highscore-Liste anzeigen
     public Response getScore()
     {
         List<User> userList = this.userService.getUser();
-        //Collections.sort(userList, (o1, o2) -> o1.getEloValue() < o2.getEloValue());
         userList.sort(Comparator.comparingInt(User::getEloValue).reversed());
 
         String returnMessage = "";

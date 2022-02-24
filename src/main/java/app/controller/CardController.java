@@ -8,22 +8,22 @@ import http.HttpStatus;
 import server.Response;
 import app.model.Card;
 import server.Request;
-
-import java.util.Collections;
 import java.util.List;
 
 public class CardController extends Controller
 {
     private CardService cardService;
 
-    public CardController(CardService cardService) {
+    public CardController(CardService cardService)
+    {
         super();
         this.cardService = cardService;
     }
 
     // POST /packages       --> packages hinzufügen
-    public Response addPackages(Request request) {
-        try {
+    public Response addPackages(Request request)
+    {
+        try{
             Card[] cards = null;
             cards = this.getObjectMapper().readValue(request.getBody(), Card[].class);
             this.cardService.addCards(cards);
@@ -43,10 +43,11 @@ public class CardController extends Controller
         }
     }
 
-    public Response showPackages() {
+    // GET /packages       --> packages anzeigen
+    public Response showPackages()
+    {
         try {
             List cards = this.cardService.getCards();
-            // "[ { \"id\": 1, \"city\": \"Vienna\", \"temperature\": 9.0 }, { ... }, { ... } ]"
             String userDataJSON = this.getObjectMapper().writeValueAsString(cards);
 
             return new Response(
@@ -67,11 +68,9 @@ public class CardController extends Controller
     // POST /transactions/packages      --> packages kaufen
     public Response acquirePackage(User user)
     {
-        //System.out.println(user.getCoins());
         if(user.getCoins() >= 5)
         {
             String returnMessage = this.cardService.acquireCards(user);
-            //Collections.addAll(user.stack, cards);
             user.setCoins(user.getCoins()-5);
 
             return new Response(

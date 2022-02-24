@@ -1,3 +1,4 @@
+app\controller\CardController.class
 app\App.class
 app\service\UserService.class
 http\HttpStatus.class
