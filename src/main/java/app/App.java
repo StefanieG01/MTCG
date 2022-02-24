@@ -3,7 +3,6 @@ package app;
 import app.controller.CardController;
 import app.controller.GameController;
 import app.controller.UserController;
-import app.model.Game;
 import app.model.User;
 import app.service.GameService;
 import app.service.UserService;
@@ -14,18 +13,17 @@ import server.Request;
 import server.Response;
 import server.ServerApp;
 import app.service.CardService;
-import app.service.UserService;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class App implements ServerApp {
+public class App implements ServerApp
+{
     private final UserController userController;
     private final CardController cardController;
     private final UserService userService;
     private final GameController gameController;
     private final CardService cardService;
-    //private final GameService gameService;
 
     public App() {
 
@@ -51,10 +49,12 @@ public class App implements ServerApp {
     @Override
     public Response handleRequest(Request request)
     {
+        // alle user anzeigen
         if (request.getPathname().equals("/users") && request.getMethod() == Method.GET)
         {
             return this.userController.getUsers();
         }
+        // einzelnen user anzeigen
         else if(request.getPathname().contains("/users/") && request.getMethod() == Method.GET)
         {
             if(checkToken(request) && (request.getPathname().substring(request.getPathname().lastIndexOf("/")+1).equals((request.getToken()).split("-")[0]) ))
@@ -67,6 +67,7 @@ public class App implements ServerApp {
             }
 
         }
+        // userprofil updaten
         else if(request.getPathname().contains("/users/") && request.getMethod() == Method.PUT)
         {
             if(checkToken(request) && (request.getPathname().substring(request.getPathname().lastIndexOf("/")+1).equals((request.getToken()).split("-")[0]) ))
@@ -77,25 +78,29 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
+        // user neu anlegen
         else if (request.getPathname().equals("/users") && request.getMethod() == Method.POST)
         {
             return this.userController.addUser(request);
         }
-        else if(request.getPathname().equals("/sessions") && request.getMethod() == Method.POST)    //LOGIN
+        // login
+        else if(request.getPathname().equals("/sessions") && request.getMethod() == Method.POST)
         {
             return this.userController.login(request);
         }
-        else if(request.getPathname().equals("/packages") && request.getMethod() == Method.POST)    // neue Packages
+        // packages hinzufügen
+        else if(request.getPathname().equals("/packages") && request.getMethod() == Method.POST)
         {
             return this.cardController.addPackages(request);
         }
-        else if(request.getPathname().equals("/packages") && request.getMethod() == Method.GET)    // Packages anzeigen
+        // packages anzeigen --> nur zu debug-zwecken
+        else if(request.getPathname().equals("/packages") && request.getMethod() == Method.GET)
         {
             return this.cardController.showPackages();
         }
-        else if(request.getPathname().equals("/transactions/packages") && request.getMethod() == Method.POST)    // Packages anzeigen
+        // user kauft package
+        else if(request.getPathname().equals("/transactions/packages") && request.getMethod() == Method.POST)
         {
             if(checkToken(request))
             {
@@ -110,9 +115,9 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
-        else if(request.getPathname().equals("/cards") && request.getMethod() == Method.GET)    // Packages von User anzeigen
+        // Stack von user anzeigen
+        else if(request.getPathname().equals("/cards") && request.getMethod() == Method.GET)
         {
             if(checkToken(request))
             {
@@ -123,9 +128,9 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
-        else if(request.getPathname().equals("/deck") && request.getMethod() == Method.GET)    // Deck von User anzeigen
+        // Deck von User anzeigen
+        else if(request.getPathname().equals("/deck") && request.getMethod() == Method.GET)
         {
            if(checkToken(request))
            {
@@ -136,9 +141,9 @@ public class App implements ServerApp {
            {
                return this.cardController.missingToken();
            }
-
         }
-        else if(request.getPathname().equals("/deck") && request.getMethod() == Method.PUT)    // Deck für user erstellen
+        // Deck für user erstellen
+        else if(request.getPathname().equals("/deck") && request.getMethod() == Method.PUT)
         {
             if(checkToken(request))
             {
@@ -149,9 +154,9 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
-        else if(request.getPathname().equals("/battles") && request.getMethod() == Method.GET)    // Deck für user erstellen
+        // battle
+        else if(request.getPathname().equals("/battles") && request.getMethod() == Method.GET)
         {
             if(checkToken(request))
             {
@@ -162,11 +167,9 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-            //User user = this.userService.getUser(request.getToken().split("-")[0]);
-            //return this.gameController.fight(user);
-            //System.out.println(request.getBody());
         }
-        else if(request.getPathname().equals("/stats") && request.getMethod() == Method.GET)    // Deck für user erstellen
+        // stats von user anzeigen
+        else if(request.getPathname().equals("/stats") && request.getMethod() == Method.GET)
         {
             if(checkToken(request))
             {
@@ -177,10 +180,10 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
 
-        else if(request.getPathname().equals("/score") && request.getMethod() == Method.GET)    // Deck für user erstellen
+        // Highscore-Liste anzeigen
+        else if(request.getPathname().equals("/score") && request.getMethod() == Method.GET)
         {
             if(checkToken(request))
             {
@@ -190,9 +193,7 @@ public class App implements ServerApp {
             {
                 return this.cardController.missingToken();
             }
-
         }
-
         return new Response(
             HttpStatus.BAD_REQUEST,
             ContentType.JSON,
@@ -200,6 +201,7 @@ public class App implements ServerApp {
         );
     }
 
+    // token prüfen
     public boolean checkToken(Request request)
     {
         if(request.getToken() == null)
