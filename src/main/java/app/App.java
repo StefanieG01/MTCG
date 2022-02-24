@@ -92,7 +92,14 @@ public class App implements ServerApp
         // packages hinzufügen
         else if(request.getPathname().equals("/packages") && request.getMethod() == Method.POST)
         {
-            return this.cardController.addPackages(request);
+            if(checkToken(request) && (request.getToken()).split("-")[0].equals("admin"))
+            {
+                return this.cardController.addPackages(request);
+            }
+            else
+            {
+                return this.cardController.missingToken();
+            }
         }
         // packages anzeigen --> nur zu debug-zwecken
         else if(request.getPathname().equals("/packages") && request.getMethod() == Method.GET)
